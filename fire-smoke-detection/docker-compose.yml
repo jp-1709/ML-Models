@@ -1,0 +1,54 @@
+version: "3.9"
+
+# ══════════════════════════════════════════════════════════════════════════════
+# PYREGUARD — Docker Compose
+# ══════════════════════════════════════════════════════════════════════════════
+# Run:  docker compose up --build
+# Then (on LOCAL laptop):
+#   ssh -L 3000:localhost:3000 -L 5050:localhost:5050 user@SERVER_IP
+#   Open:  http://localhost:3000
+# ══════════════════════════════════════════════════════════════════════════════
+
+services:
+
+  # ── Flask Backend ────────────────────────────────────────────────────────
+  backend:
+    build:
+      context:    ./backend
+      dockerfile: Dockerfile.backend
+    container_name: pyreguard-api
+    restart: unless-stopped
+    ports:
+      - "5050:5050"
+    volumes:
+      - ./backend/models:/app/models:ro      # mount trained weights
+      - model-cache:/root/.cache             # cache downloaded YOLO weights
+    environment:
+      - MODEL_PATH=/app/models/fire_smoke_yolov8.pt
+      - CONF_THRESHOLD=0.45
+      - IOU_THRESHOLD=0.45
+      - DEVICE=cpu                           # change to "0" for GPU
+      - PORT=5050
+    healthcheck:
+      test:     ["CMD", "curl", "-f", "http://localhost:5050/api/health"]
+      interval: 15s
+      timeout:  5s
+      retries:  3
+
+  # ── React Frontend ───────────────────────────────────────────────────────
+  frontend:
+    build:
+      context:    ./frontend
+      dockerfile: Dockerfile.frontend
+    container_name: pyreguard-ui
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    environment:
+      - VITE_API_URL=http://localhost:5050
+
+volumes:
+  model-cache:

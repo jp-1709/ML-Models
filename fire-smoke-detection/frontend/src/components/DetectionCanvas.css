@@ -1,0 +1,102 @@
+.detection-canvas-wrap {
+  position: relative;
+  background: #0D0F14;
+  min-height: 360px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.camera-video {
+  width: 100%;
+  height: auto;
+  display: block;
+  max-height: 520px;
+  object-fit: contain;
+}
+
+.annotated-frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.overlay-canvas {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* ── Idle placeholder ─────────────────────────────────────────────── */
+.camera-idle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 60px 24px;
+}
+
+.idle-icon svg { width: 72px; height: 72px; opacity: 0.4; }
+
+.idle-text {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: #5C6070;
+}
+
+.idle-sub {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11px;
+  color: #3A3D48;
+}
+
+/* ── Risk badge overlay ───────────────────────────────────────────── */
+.risk-overlay-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  border: 1.5px solid;
+  padding: 4px 10px;
+  border-radius: 2px;
+  background: rgba(13,15,20,0.80);
+  backdrop-filter: blur(4px);
+}
+
+.risk-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  animation: riskPulse 1s infinite;
+}
+
+@keyframes riskPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.6; transform: scale(0.8); }
+}
+
+/* ── Corner decorations ───────────────────────────────────────────── */
+.corner {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-color: rgba(232,64,64,0.35);
+  border-style: solid;
+  pointer-events: none;
+}
+.corner-tl { top: 6px;    left: 6px;    border-width: 2px 0 0 2px; }
+.corner-tr { top: 6px;    right: 6px;   border-width: 2px 2px 0 0; }
+.corner-bl { bottom: 6px; left: 6px;    border-width: 0 0 2px 2px; }
+.corner-br { bottom: 6px; right: 6px;   border-width: 0 2px 2px 0; }
